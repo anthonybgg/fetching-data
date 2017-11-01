@@ -23,19 +23,16 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, SearchingRe
         try {
             URL url = new URL(strings[0]);
             URLConnection connection = url.openConnection();
-            connection.setRequestProperty("APIKey", RestaurantAPI.API_Key);
+            connection.setRequestProperty("user-key", RestaurantAPI.API_Key);
             connection.connect();
 
             InputStream inputStream = connection.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
 
             Gson gson = new Gson();
-            SearchingRestaurants searchingRestaurants = gson.fromJson(inputStreamReader, SearchingRestaurants.class);
-
-
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            SearchingRestaurants searchingRestaurants;
+            searchingRestaurants = gson.fromJson(inputStreamReader, SearchingRestaurants.class);
+            return searchingRestaurants;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,7 +45,10 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, SearchingRe
             return;
         }
         for (RestaurantsCollection restaurantsCollection: searchingRestaurants.getRestaurants()) {
-            Log.d(TAG, "restaurant" + restaurantsCollection.getRestaurant());
+            Log.d(TAG, "name: " + restaurantsCollection.getRestaurant().getName());
+            Log.d(TAG, "location: " + restaurantsCollection.getRestaurant().getLocation().getAddress());
+            Log.d(TAG, "price range: " + restaurantsCollection.getRestaurant().getPriceRange());
+            Log.d(TAG, "cuisine: " + restaurantsCollection.getRestaurant().getCuisines());
         }
     }
 }
