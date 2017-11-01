@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ZomatoApp</string>
+    <string name="restaurant_name">Restaurant Name</string>
+    <string name="location">Location</string>
+    <string name="cuisine_type">Cuisine Type</string>
+    <string name="PriceRange">Price Range</string>
 </resources>

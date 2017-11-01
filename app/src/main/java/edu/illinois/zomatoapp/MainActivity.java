@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         final LinearLayout listLayout = (LinearLayout) findViewById(R.id.list_layout);
         String url = urlString;
-        RestaurantsAsyncTask restaurantsAsyncTask = new RestaurantsAsyncTask();
+        RestaurantsAsyncTask restaurantsAsyncTask = new RestaurantsAsyncTask(this, listLayout);
         restaurantsAsyncTask.execute(url);
     }
 }

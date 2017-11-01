@@ -1,10 +1,18 @@
 package edu.illinois.zomatoapp;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +24,15 @@ import java.nio.charset.Charset;
 
 public class RestaurantsAsyncTask extends AsyncTask<String, Integer, SearchingRestaurants> {
 
-    public static final String TAG = RestaurantsAsyncTask.class.getSimpleName();
+    private static final String TAG = RestaurantsAsyncTask.class.getSimpleName();
+    @SuppressLint("StaticFieldLeak")
+    private Context context;
+    @SuppressLint("StaticFieldLeak")
+    private LinearLayout listLayout;
+    RestaurantsAsyncTask(Context context, LinearLayout listLayout) {
+        this.context = context;
+        this.listLayout = listLayout;
+    }
 
     @Override
     protected SearchingRestaurants doInBackground(String... strings) {
@@ -33,6 +49,8 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, SearchingRe
             SearchingRestaurants searchingRestaurants;
             searchingRestaurants = gson.fromJson(inputStreamReader, SearchingRestaurants.class);
             return searchingRestaurants;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,6 +67,15 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, SearchingRe
             Log.d(TAG, "location: " + restaurantsCollection.getRestaurant().getLocation().getAddress());
             Log.d(TAG, "price range: " + restaurantsCollection.getRestaurant().getPriceRange());
             Log.d(TAG, "cuisine: " + restaurantsCollection.getRestaurant().getCuisines());
+            View restaurantsList = LayoutInflater.from(context).inflate(R.layout.restaurants_layout,
+                    listLayout, false);
+            final TextView nameOfRestaurant = (TextView) restaurantsList.findViewById(R.id.nameOfRestaurant);
+            nameOfRestaurant.setText(restaurantsCollection.getRestaurant().getName());
+            final TextView location = (TextView) restaurantsList.findViewById(R.id.location);
+            location.setText(restaurantsCollection.getRestaurant().getLocation().getAddress());
+//            final TextView priceRange = (TextView) restaurantsList.findViewById(R.id.priceRange);
+//            priceRange.setText(restaurantsCollection.getRestaurant().getPriceRange());
+            listLayout.addView(restaurantsList);
         }
     }
 }
