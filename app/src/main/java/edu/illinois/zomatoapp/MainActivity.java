@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         String[] urls = new String[NUMBER_OF_URL];
 
         for (int i = 0; i < urls.length; i++) {
-            urls[i] = urlString + "&start=" + 20 * i + "&count=20";
+            urls[i] = urlString + "&start=" + 10 * i + "&count=10";
         }
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.restaurantRecyclerView);

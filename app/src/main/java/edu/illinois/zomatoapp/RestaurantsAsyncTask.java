@@ -42,19 +42,21 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, ArrayList<R
     protected ArrayList<Restaurant> doInBackground(String... strings) {
         ArrayList<Restaurant> restaurants = new ArrayList<>();
         try {
-            URL url = new URL(strings[0]);
-            URLConnection connection = url.openConnection();
-            connection.setRequestProperty("user-key", RestaurantAPI.API_Key);
-            connection.connect();
+            for (String stringURL : strings) {
+                URL url = new URL(stringURL);
+                URLConnection connection = url.openConnection();
+                connection.setRequestProperty("user-key", RestaurantAPI.API_Key);
+                connection.connect();
 
-            InputStream inputStream = connection.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+                InputStream inputStream = connection.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
 
-            Gson gson = new Gson();
-            SearchingRestaurants searchingRestaurants;
-            searchingRestaurants = gson.fromJson(inputStreamReader, SearchingRestaurants.class);
-            for (int i = 0; i < searchingRestaurants.getRestaurants().length; i++) {
-                restaurants.add(searchingRestaurants.getRestaurants()[i].getRestaurant());
+                Gson gson = new Gson();
+                SearchingRestaurants searchingRestaurants;
+                searchingRestaurants = gson.fromJson(inputStreamReader, SearchingRestaurants.class);
+                for (int i = 0; i < searchingRestaurants.getRestaurants().length; i++) {
+                    restaurants.add(searchingRestaurants.getRestaurants()[i].getRestaurant());
+                }
             }
             return restaurants;
         } catch (MalformedURLException e) {
@@ -85,18 +87,6 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, ArrayList<R
                 }
             }, 3000);
 
-
-//            View restaurantsList = LayoutInflater.from(context).inflate(R.layout.restaurants_layout,
-//                    listLayout, false);
-//            final TextView nameOfRestaurant = (TextView) restaurantsList.findViewById(R.id.nameOfRestaurant);
-//            nameOfRestaurant.setText(restaurant.getName());
-//            final TextView location = (TextView) restaurantsList.findViewById(R.id.location);
-//            location.setText(restaurant.getLocation().getAddress());
-//            final TextView city = (TextView) restaurantsList.findViewById(R.id.city);
-//            city.setText(restaurant.getLocation().getCity());
-//            final TextView cuisineType = (TextView) restaurantsList.findViewById(R.id.cuisineType);
-//            cuisineType.setText(restaurant.getCuisines());
-//            listLayout.addView(restaurantsList);
         }
     }
 }
