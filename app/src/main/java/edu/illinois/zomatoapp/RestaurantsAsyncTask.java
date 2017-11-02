@@ -3,7 +3,10 @@ package edu.illinois.zomatoapp;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,21 +24,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
-public class RestaurantsAsyncTask extends AsyncTask<String, Integer, SearchingRestaurants> {
+public class RestaurantsAsyncTask extends AsyncTask<String, Integer, ArrayList<Restaurant>> {
 
     private static final String TAG = RestaurantsAsyncTask.class.getSimpleName();
     @SuppressLint("StaticFieldLeak")
     private Context context;
     @SuppressLint("StaticFieldLeak")
-    private LinearLayout listLayout;
-    RestaurantsAsyncTask(Context context, LinearLayout listLayout) {
+    private RecyclerView restaurantLayout;
+    RestaurantsAsyncTask(Context context, RecyclerView restaurantLayout) {
         this.context = context;
-        this.listLayout = listLayout;
+        this.restaurantLayout = restaurantLayout;
     }
 
     @Override
-    protected SearchingRestaurants doInBackground(String... strings) {
+    protected ArrayList<Restaurant> doInBackground(String... strings) {
+        ArrayList<Restaurant> restaurants = new ArrayList<>();
         try {
             URL url = new URL(strings[0]);
             URLConnection connection = url.openConnection();
@@ -48,7 +53,10 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, SearchingRe
             Gson gson = new Gson();
             SearchingRestaurants searchingRestaurants;
             searchingRestaurants = gson.fromJson(inputStreamReader, SearchingRestaurants.class);
-            return searchingRestaurants;
+            for (int i = 0; i < searchingRestaurants.getRestaurants().length; i++) {
+                restaurants.add(searchingRestaurants.getRestaurants()[i].getRestaurant());
+            }
+            return restaurants;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -58,25 +66,37 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, SearchingRe
     }
 
     @Override
-    protected void onPostExecute(SearchingRestaurants searchingRestaurants) {
-        if (searchingRestaurants == null) {
+    protected void onPostExecute(ArrayList<Restaurant> restaurants) {
+        if (restaurants == null) {
             return;
         }
-        for (RestaurantsCollection restaurantsCollection: searchingRestaurants.getRestaurants()) {
-            Log.d(TAG, "name: " + restaurantsCollection.getRestaurant().getName());
-            Log.d(TAG, "location: " + restaurantsCollection.getRestaurant().getLocation().getAddress());
-            Log.d(TAG, "cuisine: " + restaurantsCollection.getRestaurant().getCuisines());
-            View restaurantsList = LayoutInflater.from(context).inflate(R.layout.restaurants_layout,
-                    listLayout, false);
-            final TextView nameOfRestaurant = (TextView) restaurantsList.findViewById(R.id.nameOfRestaurant);
-            nameOfRestaurant.setText(restaurantsCollection.getRestaurant().getName());
-            final TextView location = (TextView) restaurantsList.findViewById(R.id.location);
-            location.setText(restaurantsCollection.getRestaurant().getLocation().getAddress());
-            final TextView city = (TextView) restaurantsList.findViewById(R.id.city);
-            city.setText(restaurantsCollection.getRestaurant().getLocation().getCity());
-            final TextView cuisineType = (TextView) restaurantsList.findViewById(R.id.cuisineType);
-            cuisineType.setText(restaurantsCollection.getRestaurant().getCuisines());
-            listLayout.addView(restaurantsList);
+
+        final RestaurantAdapter restaurantAdapter = new RestaurantAdapter(restaurants);
+        restaurantLayout.setAdapter(restaurantAdapter);
+        restaurantLayout.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
+        for (final Restaurant restaurant: restaurants) {
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    restaurantAdapter.addRestaurant(restaurant);
+                    restaurantAdapter.notifyDataSetChanged();
+                }
+            }, 3000);
+
+
+//            View restaurantsList = LayoutInflater.from(context).inflate(R.layout.restaurants_layout,
+//                    listLayout, false);
+//            final TextView nameOfRestaurant = (TextView) restaurantsList.findViewById(R.id.nameOfRestaurant);
+//            nameOfRestaurant.setText(restaurant.getName());
+//            final TextView location = (TextView) restaurantsList.findViewById(R.id.location);
+//            location.setText(restaurant.getLocation().getAddress());
+//            final TextView city = (TextView) restaurantsList.findViewById(R.id.city);
+//            city.setText(restaurant.getLocation().getCity());
+//            final TextView cuisineType = (TextView) restaurantsList.findViewById(R.id.cuisineType);
+//            cuisineType.setText(restaurant.getCuisines());
+//            listLayout.addView(restaurantsList);
         }
     }
 }
