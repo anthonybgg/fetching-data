@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String urlString = "https://developers.zomato.com/api/v2.1/search?entity_id=685";
+    public static final String urlString =
+            "https://developers.zomato.com/api/v2.1/search?entity_id=280&entity_type=city";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -65,7 +65,6 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, SearchingRe
         for (RestaurantsCollection restaurantsCollection: searchingRestaurants.getRestaurants()) {
             Log.d(TAG, "name: " + restaurantsCollection.getRestaurant().getName());
             Log.d(TAG, "location: " + restaurantsCollection.getRestaurant().getLocation().getAddress());
-            Log.d(TAG, "price range: " + restaurantsCollection.getRestaurant().getPriceRange());
             Log.d(TAG, "cuisine: " + restaurantsCollection.getRestaurant().getCuisines());
             View restaurantsList = LayoutInflater.from(context).inflate(R.layout.restaurants_layout,
                     listLayout, false);
@@ -73,8 +72,10 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, SearchingRe
             nameOfRestaurant.setText(restaurantsCollection.getRestaurant().getName());
             final TextView location = (TextView) restaurantsList.findViewById(R.id.location);
             location.setText(restaurantsCollection.getRestaurant().getLocation().getAddress());
-//            final TextView priceRange = (TextView) restaurantsList.findViewById(R.id.priceRange);
-//            priceRange.setText(restaurantsCollection.getRestaurant().getPriceRange());
+            final TextView city = (TextView) restaurantsList.findViewById(R.id.city);
+            city.setText(restaurantsCollection.getRestaurant().getLocation().getCity());
+            final TextView cuisineType = (TextView) restaurantsList.findViewById(R.id.cuisineType);
+            cuisineType.setText(restaurantsCollection.getRestaurant().getCuisines());
             listLayout.addView(restaurantsList);
         }
     }
