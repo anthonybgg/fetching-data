@@ -4,18 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.provider.SearchRecentSuggestions;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,11 +20,14 @@ import java.util.ArrayList;
 
 public class RestaurantsAsyncTask extends AsyncTask<String, Integer, ArrayList<Restaurant>> {
 
-    private static final String TAG = RestaurantsAsyncTask.class.getSimpleName();
-    @SuppressLint("StaticFieldLeak")
     private Context context;
-    @SuppressLint("StaticFieldLeak")
     private RecyclerView restaurantLayout;
+
+    /**
+     * Constructor for the AsyncTask
+     * @param context is the environment.
+     * @param restaurantLayout is the RecyclerView Layout.
+     */
     RestaurantsAsyncTask(Context context, RecyclerView restaurantLayout) {
         this.context = context;
         this.restaurantLayout = restaurantLayout;
@@ -45,6 +40,7 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, ArrayList<R
             for (String stringURL : strings) {
                 URL url = new URL(stringURL);
                 URLConnection connection = url.openConnection();
+                // Get the API
                 connection.setRequestProperty("user-key", RestaurantAPI.API_Key);
                 connection.connect();
 
@@ -55,6 +51,7 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, ArrayList<R
                 SearchingRestaurants searchingRestaurants;
                 searchingRestaurants = gson.fromJson(inputStreamReader, SearchingRestaurants.class);
                 for (int i = 0; i < searchingRestaurants.getRestaurants().length; i++) {
+                    // Add the restaurant at that specific index.
                     restaurants.add(searchingRestaurants.getRestaurants()[i].getRestaurant());
                 }
             }
@@ -72,8 +69,9 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, ArrayList<R
         if (restaurants == null) {
             return;
         }
-
+        // Make a new Restaurant Adapter and pass in restaurants.
         final RestaurantAdapter restaurantAdapter = new RestaurantAdapter(restaurants);
+        // Fill out the recycler view
         restaurantLayout.setAdapter(restaurantAdapter);
         restaurantLayout.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
@@ -85,7 +83,7 @@ public class RestaurantsAsyncTask extends AsyncTask<String, Integer, ArrayList<R
                     restaurantAdapter.addRestaurant(restaurant);
                     restaurantAdapter.notifyDataSetChanged();
                 }
-            }, 3000);
+            }, 2000);
 
         }
     }
