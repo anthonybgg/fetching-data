@@ -1,6 +1,5 @@
 package edu.illinois.zomatoapp;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;

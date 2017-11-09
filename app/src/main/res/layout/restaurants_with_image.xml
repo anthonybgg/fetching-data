@@ -37,7 +37,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlHardcoded" />
 
-    <TextView
+    <Button
         android:id="@+id/location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

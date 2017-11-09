@@ -1,14 +1,19 @@
 package edu.illinois.zomatoapp;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -18,7 +23,7 @@ import java.util.List;
  */
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.ViewHolder> {
-
+    public static final String IMG_URL = "img-ur";
     private List<Restaurant> restaurants = new ArrayList<>();
 
     /**
@@ -48,15 +53,49 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // Get the position in the list to fill the ViewHolder.
-        Restaurant restaurant = restaurants.get(position);
+        final Restaurant restaurant = restaurants.get(position);
         // Fill the viewHolder with the information.
         holder.nameOfRestaurant.setText(restaurant.getName());
-        holder.location.setText(restaurant.getLocation().getAddress());
+        final String address = restaurant.getLocation().getAddress();
+        holder.location.setText(address);
+
+        try {
+            final String encodedLocation = URLEncoder.encode(address, "UTF-8");
+            holder.location.setEnabled(true);
+            holder.location.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final Context context = view.getContext();
+                    Uri locationUri = Uri.parse("geo:0,0?q=" + encodedLocation);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, locationUri);
+
+                    if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(intent);
+                    }
+                }
+            });
+        } catch (Exception e)  {
+            holder.location.setEnabled(false);
+        }
+
         holder.cuisineType.setText(restaurant.getCuisines());
         holder.city.setText(restaurant.getLocation().getCity());
         if (!restaurant.getThumb().equals("")) {
             Picasso.with(holder.imageView.getContext()).load(restaurant.getThumb()).into(holder.imageView);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final Context context = view.getContext();
+                    Intent infoIntent = new Intent(context, InfoActivity.class);
+                    infoIntent.putExtra(IMG_URL, restaurant.getThumb());
+                    context.startActivity(infoIntent);
+                }
+            });
+        } else {
+            holder.itemView.setOnClickListener(null);
         }
+
+
     }
 
     @Override
@@ -72,13 +111,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
         return restaurants.size();
     }
 
-
     class ViewHolder extends RecyclerView.ViewHolder {
         // Pointer to the various things to plug data in
         View itemView;
         ImageView imageView;
         TextView nameOfRestaurant;
-        TextView location;
+        Button location;
         TextView city;
         TextView cuisineType;
 
@@ -89,7 +127,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
             this.city = (TextView) itemView.findViewById(R.id.city);
             this.nameOfRestaurant = (TextView) itemView.findViewById(R.id.nameOfRestaurant);
             this.cuisineType = (TextView) itemView.findViewById(R.id.cuisineType);
-            this.location = (TextView) itemView.findViewById(R.id.location);
+            this.location = (Button) itemView.findViewById(R.id.location);
         }
     }
 }
