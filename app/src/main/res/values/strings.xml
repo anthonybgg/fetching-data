@@ -14,5 +14,6 @@
     <string name="cuisine_type">Cuisine Type</string>
     <string name="cuisine_type_info">Cuisine Type</string>
     <string name="average_cost_for_two_info">Average Cost For Two</string>
-    <string name="address_info">Address</string>
+    <string name="address_info">Go TO Location</string>
+    <string name="zomato">WEBSITE</string>
 </resources>

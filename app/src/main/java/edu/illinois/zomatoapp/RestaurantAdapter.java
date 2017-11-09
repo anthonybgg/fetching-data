@@ -56,9 +56,21 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
         final Restaurant restaurant = restaurants.get(position);
         // Fill the viewHolder with the information.
         holder.nameOfRestaurant.setText(restaurant.getName());
+        setAddressClickable(holder, restaurant);
+
+        holder.cuisineType.setText(restaurant.getCuisines());
+        holder.city.setText(restaurant.getLocation().getCity());
+        setItemViewClickable(holder, restaurant);
+    }
+
+    /**
+     * The function will set Address Button clickable if the address is correct.
+     * @param holder holds your views.
+     * @param restaurant is the restaurant with all of its attribute.
+     */
+    private void setAddressClickable(ViewHolder holder, Restaurant restaurant) {
         final String address = restaurant.getLocation().getAddress();
         holder.location.setText(address);
-
         try {
             final String encodedLocation = URLEncoder.encode(address, "UTF-8");
             holder.location.setEnabled(true);
@@ -77,9 +89,14 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
         } catch (Exception e)  {
             holder.location.setEnabled(false);
         }
+    }
 
-        holder.cuisineType.setText(restaurant.getCuisines());
-        holder.city.setText(restaurant.getLocation().getCity());
+    /**
+     * This function will set the Item View clickable anywhere you type.
+     * @param holder holds your views.
+     * @param restaurant is the restaurant with all of its attribute.
+     */
+    private void setItemViewClickable(ViewHolder holder, final Restaurant restaurant) {
         if (!restaurant.getThumb().equals("")) {
             Picasso.with(holder.imageView.getContext()).load(restaurant.getThumb()).into(holder.imageView);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
