@@ -87,15 +87,13 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
                 public void onClick(View view) {
                     final Context context = view.getContext();
                     Intent infoIntent = new Intent(context, InfoActivity.class);
-                    infoIntent.putExtra(IMG_URL, restaurant.getThumb());
+                    infoIntent.putExtra("restaurant", restaurant);
                     context.startActivity(infoIntent);
                 }
             });
         } else {
             holder.itemView.setOnClickListener(null);
         }
-
-
     }
 
     @Override

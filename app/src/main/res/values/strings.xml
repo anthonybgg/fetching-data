@@ -1,13 +1,18 @@
 <resources>
     <string name="app_name">ZomatoApp</string>
-    <string name="restaurant_name">Restaurant Name</string>
     <string name="location">Location</string>
-    <string name="cuisine_type">Cuisine Type</string>
-    <string name="PriceRange">Price Range</string>
-    <string name="city">City</string>
-    <string name="restaurant_image">Restaurant Image</string>
+    <string name="price_range_info">Price Range</string>
+    <string name="city_info">City</string>
     <string name="restaurant_with_image">Restaurant With Image</string>
     <string name="cuisine_type_with_image">Cuisine type with Image</string>
     <string name="city_with_image">City with image</string>
     <string name="location_with_image">Location with image</string>
+    <string name="restaurant_image">Restaurant Image</string>
+    <string name="restaurant_name">Restaurant Name</string>
+    <string name="restaurant_name_info">Restaurant Name</string>
+    <string name="city">City</string>
+    <string name="cuisine_type">Cuisine Type</string>
+    <string name="cuisine_type_info">Cuisine Type</string>
+    <string name="average_cost_for_two_info">Average Cost For Two</string>
+    <string name="address_info">Address</string>
 </resources>
